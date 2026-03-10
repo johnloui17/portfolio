@@ -8,19 +8,23 @@ export default function Home() {
   const { scrollYProgress } = useScroll();
   const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   
-  // Track mouse position with a simple ref and Framer Motion useMotionValue to prevent full component react re-renders
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+  // --- Spotlight: useMotionValue + useTransform at top level (NOT inside JSX) ---
+  const mouseX = useMotionValue(typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
+  const mouseY = useMotionValue(typeof window !== 'undefined' ? window.innerHeight / 2 : 0);
+
+  // Offset so the orb is centered on the cursor
+  const spotlightX = useTransform(mouseX, (val) => val - 400);
+  const spotlightY = useTransform(mouseY, (val) => val - 400);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
     };
-    
+
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [mouseX, mouseY]);
   
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -51,19 +55,19 @@ export default function Home() {
       {/* Interactive Mouseover Spotlight */}
       <motion.div
         style={{
-          x: useTransform(mouseX, val => val - 400), 
-          y: useTransform(mouseY, val => val - 400),
+          x: spotlightX,
+          y: spotlightY,
           position: "fixed",
           top: 0,
           left: 0,
           width: "800px",
           height: "800px",
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(59, 130, 246, 0.1) 30%, rgba(0, 0, 0, 0) 70%)",
-          filter: "blur(40px)",
-          zIndex: -1,
-          pointerEvents: "none", 
-          mixBlendMode: "screen" // Ensures the color pops against the dark background
+          background: "radial-gradient(circle, rgba(120, 60, 255, 0.25) 0%, rgba(60, 120, 255, 0.15) 40%, rgba(0, 0, 0, 0) 70%)",
+          filter: "blur(60px)",
+          zIndex: 0,
+          pointerEvents: "none",
+          mixBlendMode: "screen",
         }}
       />
 
