@@ -110,13 +110,13 @@ describe('Portfolio Home Page', () => {
     });
 
     it('renders the Efficiency & Scale highlights', () => {
-      expect(screen.getByText(/609\+ files/i)).toBeInTheDocument();
-      expect(screen.getByText(/400\+ e2e tests/i)).toBeInTheDocument();
-      expect(screen.getByText(/lighthouse optimizations/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/609\+ files/i).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/400\+ e2e tests/i).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/lighthouse optimizations/i).length).toBeGreaterThan(0);
     });
 
     it('renders Security bento block', () => {
-      expect(screen.getByText(/HSTS/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/HSTS/i).length).toBeGreaterThan(0);
     });
 
     it('renders Analytics bento block', () => {
