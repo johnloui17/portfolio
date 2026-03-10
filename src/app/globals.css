@@ -4,18 +4,18 @@
   --bg-secondary: #0a0a0a;
   --text-primary: #ededed;
   --text-secondary: #888888;
-  
-  --accent-primary: #ffffff; 
-  --accent-secondary: #aaaaaa; 
-  
+
+  --accent-primary: #ffffff;
+  --accent-secondary: #aaaaaa;
+
   /* Very subtle borders for structure */
   --border-color: rgba(255, 255, 255, 0.08);
   --border-hover: rgba(255, 255, 255, 0.2);
-  
+
   /* Glass and Overlays (Minimal) */
   --glass-bg: rgba(10, 10, 10, 0.5);
   --glass-border: rgba(255, 255, 255, 0.05);
-  
+
   --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -25,7 +25,8 @@
   margin: 0;
 }
 
-html, body {
+html,
+body {
   max-width: 100vw;
   overflow-x: hidden;
   background-color: var(--bg-color);
@@ -41,18 +42,21 @@ html, body {
 ::selection {
   background: transparent;
 }
+
 ::-moz-selection {
   background: transparent;
 }
 
-a, button {
+a,
+button {
   color: inherit;
   text-decoration: none;
   transition: var(--transition-smooth);
   outline: none;
 }
 
-a:focus, button:focus {
+a:focus,
+button:focus {
   outline: none;
 }
 
@@ -139,20 +143,23 @@ a:focus, button:focus {
 
 .button-secondary:hover {
   border-color: var(--text-primary);
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--bg-color);
 }
+
 ::-webkit-scrollbar-thumb {
   background: #333;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
@@ -196,13 +203,21 @@ a:focus, button:focus {
 
 .bento-item:hover {
   border-color: var(--border-hover);
-  background: rgba(25,25,25, 0.4);
+  background: rgba(25, 25, 25, 0.4);
 }
 
 /* Layout spans for dynamic sizing */
-.span-2 { grid-column: span 2; }
-.span-3 { grid-column: span 3; }
-.span-4 { grid-column: span 4; }
+.span-2 {
+  grid-column: span 2;
+}
+
+.span-3 {
+  grid-column: span 3;
+}
+
+.span-4 {
+  grid-column: span 4;
+}
 
 /* Navigation & Footer */
 .navbar {
@@ -228,22 +243,30 @@ a:focus, button:focus {
   .bento-grid {
     grid-template-columns: 1fr;
   }
-  .span-2, .span-3, .span-4 {
+
+  .span-2,
+  .span-3,
+  .span-4 {
     grid-column: span 1;
   }
+
   .container {
     padding: 0 16px;
   }
+
   .navbar {
     padding: 1.5rem 16px;
   }
+
   .footer {
     padding: 3rem 16px;
   }
+
   .section {
     padding-top: 5rem;
     padding-bottom: 5rem;
   }
+
   .bento-item {
     padding: 1.5rem;
   }
