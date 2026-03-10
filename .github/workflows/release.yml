@@ -1,0 +1,64 @@
+name: Release — Auto Version & Tag
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  release:
+    name: Bump Version & Create Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required to push tags and commits
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0      # Full history needed for tag detection
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Determine bump type from commit messages (conventional commits):
+      #   feat:     → minor bump  (1.0.0 → 1.1.0)
+      #   fix/chore/refactor/perf/style/test/docs/ci → patch bump (1.0.0 → 1.0.1)
+      #   BREAKING CHANGE in footer → major bump (1.0.0 → 2.0.0)
+      - name: Auto-bump version & tag
+        id: tag
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: patch          # Default to patch if no conventional commit prefix found
+          tag_prefix: v                # Tags will look like v1.0.0, v1.1.0, etc.
+          release_branches: master,main
+          append_to_pre_release_tag: false
+
+      - name: Sync version in package.json
+        run: |
+          # Strip the leading 'v' from the tag (e.g. v1.2.3 → 1.2.3)
+          VERSION="${{ steps.tag.outputs.new_version }}"
+          npm version $VERSION --no-git-tag-version --allow-same-version
+          echo "package.json bumped to $VERSION"
+
+      - name: Commit updated package.json
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(release): bump version to ${{ steps.tag.outputs.new_version }} [skip ci]"
+          file_pattern: package.json package-lock.json
+          tagging_message: ''  # Tag was already created by the previous step
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.new_tag }}
+          name: Release ${{ steps.tag.outputs.new_tag }}
+          body: ${{ steps.tag.outputs.changelog }}
+          draft: false
+          prerelease: false
