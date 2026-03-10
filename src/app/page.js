@@ -87,8 +87,8 @@ export default function Home() {
           transition={{ duration: 1, delay: 0.2 }}
           style={{ display: "flex", gap: "1.5rem" }}
         >
-          <a href="https://github.com/johnloui17" target="_blank" rel="noreferrer" style={{ opacity: 0.7 }}><FiGithub size={20} /></a>
-          <a href="https://www.linkedin.com/in/john-loui-26a8b9155" target="_blank" rel="noreferrer" style={{ opacity: 0.7 }}><FiLinkedin size={20} /></a>
+          <a href="https://github.com/johnloui17" target="_blank" rel="noreferrer" aria-label="GitHub" style={{ opacity: 0.7 }}><FiGithub size={20} /></a>
+          <a href="https://www.linkedin.com/in/john-loui-26a8b9155" target="_blank" rel="noreferrer" aria-label="LinkedIn" style={{ opacity: 0.7 }}><FiLinkedin size={20} /></a>
         </motion.div>
       </nav>
 
