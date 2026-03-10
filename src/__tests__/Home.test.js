@@ -1,55 +1,36 @@
 /**
  * Unit tests for the Portfolio Home page
- *
- * Tests cover:
- *  - Page renders without crashing
- *  - Key text content is present
- *  - Navigation links are correct
- *  - CTA buttons are present and functional
  */
 
 import { render, screen } from '@testing-library/react';
 import Home from '@/app/page';
 
-// ---- Mock framer-motion to avoid animation issues in JSDOM ----
-jest.mock('framer-motion', () => {
-  const actual = jest.requireActual('framer-motion');
-  return {
-    ...actual,
-    motion: new Proxy(
-      {},
-      {
-        get: (_, prop) =>
-          // Return a plain HTML element wrapper for any motion.div, motion.h1, etc.
-          ({ children, ...rest }) => {
-            const Tag = prop;
-            // Strip framer-motion-specific props
-            const {
-              initial, animate, whileInView, viewport, variants, custom,
-              transition, whileHover, style, ...domProps
-            } = rest;
-            return <Tag {...domProps}>{children}</Tag>;
-          },
-      }
-    ),
-    useScroll: () => ({ scrollYProgress: { get: () => 0 } }),
-    useTransform: () => 0,
-    useMotionValue: () => ({ set: jest.fn(), get: () => 0 }),
-  };
-});
+// ---- Explicit framer-motion mock (no Proxy — avoids children being dropped) ----
+jest.mock('framer-motion', () => ({
+  motion: {
+    div: ({ children, style, className }) => <div style={style} className={className}>{children}</div>,
+    h1:  ({ children, style, className }) => <h1  style={style} className={className}>{children}</h1>,
+    h2:  ({ children, style, className }) => <h2  style={style} className={className}>{children}</h2>,
+    p:   ({ children, style, className }) => <p   style={style} className={className}>{children}</p>,
+    ul:  ({ children, style, className }) => <ul  style={style} className={className}>{children}</ul>,
+    nav: ({ children, style, className }) => <nav style={style} className={className}>{children}</nav>,
+  },
+  useScroll:     () => ({ scrollYProgress: { get: () => 0, set: () => {} } }),
+  useTransform:  () => 0,
+  useMotionValue: () => ({ set: jest.fn(), get: () => 0 }),
+  AnimatePresence: ({ children }) => children,
+}));
 
 // ---- Mock react-icons ----
 jest.mock('react-icons/fi', () => ({
-  FiArrowRight: () => <span data-testid="icon-arrow" />,
-  FiGithub: () => <span data-testid="icon-github" />,
-  FiLinkedin: () => <span data-testid="icon-linkedin" />,
-  FiMail: () => <span data-testid="icon-mail" />,
+  FiArrowRight: () => <span>→</span>,
+  FiGithub:    () => <span>GH</span>,
+  FiLinkedin:  () => <span>LI</span>,
+  FiMail:      () => <span>✉</span>,
 }));
 
 describe('Portfolio Home Page', () => {
-
   beforeEach(() => {
-    // Mock window.addEventListener for mouse events
     jest.spyOn(window, 'addEventListener').mockImplementation(() => {});
     jest.spyOn(window, 'removeEventListener').mockImplementation(() => {});
     render(<Home />);
@@ -66,17 +47,20 @@ describe('Portfolio Home Page', () => {
     });
 
     it('renders a GitHub link with the correct href', () => {
-      const githubLink = screen.getByRole('link', { name: /github/i })
-        || document.querySelector('a[href*="github.com"]');
-      const link = document.querySelector('a[href*="github.com"]');
-      expect(link).toBeInTheDocument();
+      const link = screen.getByRole('link', { name: /github/i });
       expect(link).toHaveAttribute('href', 'https://github.com/johnloui17');
     });
 
     it('renders a LinkedIn link with the correct href', () => {
-      const link = document.querySelector('a[href*="linkedin.com"]');
-      expect(link).toBeInTheDocument();
+      const link = screen.getByRole('link', { name: /linkedin/i });
       expect(link).toHaveAttribute('href', 'https://www.linkedin.com/in/john-loui-26a8b9155');
+    });
+
+    it('nav links open in new tab', () => {
+      const links = document.querySelectorAll('nav a');
+      links.forEach(link => {
+        expect(link).toHaveAttribute('target', '_blank');
+      });
     });
   });
 
@@ -96,15 +80,13 @@ describe('Portfolio Home Page', () => {
     });
 
     it('renders a "View Work" CTA button linking to #projects', () => {
-      const link = document.querySelector('a[href="#projects"]');
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveTextContent(/view work/i);
+      const link = screen.getByRole('link', { name: /view work/i });
+      expect(link).toHaveAttribute('href', '#projects');
     });
 
     it('renders a "Get in touch" email link', () => {
-      const link = document.querySelector('a[href^="mailto:"]');
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveTextContent(/get in touch/i);
+      const link = screen.getByRole('link', { name: /get in touch/i });
+      expect(link.getAttribute('href')).toMatch(/^mailto:/);
     });
   });
 
@@ -115,15 +97,16 @@ describe('Portfolio Home Page', () => {
     });
 
     it('displays frontend technologies', () => {
-      expect(screen.getByText('React 18')).toBeInTheDocument();
-      expect(screen.getByText('TypeScript')).toBeInTheDocument();
-      expect(screen.getByText('Next.js 13-16')).toBeInTheDocument();
+      // Use getAllByText since tags can appear in multiple sections
+      expect(screen.getAllByText('React 18').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('TypeScript').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Next.js 13-16').length).toBeGreaterThan(0);
     });
 
     it('displays backend technologies including Nest.js', () => {
-      expect(screen.getByText('Nest.js')).toBeInTheDocument();
-      expect(screen.getByText('Node.js')).toBeInTheDocument();
-      expect(screen.getByText('Supabase')).toBeInTheDocument();
+      expect(screen.getAllByText('Nest.js').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Node.js').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Supabase').length).toBeGreaterThan(0);
     });
 
     it('renders the Efficiency & Scale highlights', () => {
@@ -137,7 +120,7 @@ describe('Portfolio Home Page', () => {
     });
 
     it('renders Analytics bento block', () => {
-      expect(screen.getByText(/Mixpanel/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Mixpanel/i).length).toBeGreaterThan(0);
     });
   });
 
@@ -176,5 +159,4 @@ describe('Portfolio Home Page', () => {
       expect(screen.getByText(/john loui/i)).toBeInTheDocument();
     });
   });
-
 });
