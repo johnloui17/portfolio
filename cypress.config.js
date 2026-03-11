@@ -8,6 +8,7 @@ module.exports = defineConfig({
     viewportHeight: 800,
     video: false,
     screenshotOnRunFailure: true,
+    supportFile: false,
     setupNodeEvents(on, config) {},
   },
 });
