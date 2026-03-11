@@ -1,22 +1,17 @@
+@import 'variables';
+
 :root {
-  /* Minimal Dark Theme */
-  --bg-color: #000000;
-  --bg-secondary: #0a0a0a;
-  --text-primary: #ededed;
-  --text-secondary: #888888;
-
-  --accent-primary: #ffffff;
-  --accent-secondary: #aaaaaa;
-
-  /* Very subtle borders for structure */
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.2);
-
-  /* Glass and Overlays (Minimal) */
-  --glass-bg: rgba(10, 10, 10, 0.5);
-  --glass-border: rgba(255, 255, 255, 0.05);
-
-  --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --bg-color: #{$bg-color};
+  --bg-secondary: #{$bg-secondary};
+  --text-primary: #{$text-primary};
+  --text-secondary: #{$text-secondary};
+  --accent-primary: #{$accent-primary};
+  --accent-secondary: #{$accent-secondary};
+  --border-color: #{$border-color};
+  --border-hover: #{$border-hover};
+  --glass-bg: #{$glass-bg};
+  --glass-border: #{$glass-border};
+  --transition-smooth: #{$transition-smooth};
 }
 
 * {
@@ -43,24 +38,15 @@ body {
   background: transparent;
 }
 
-::-moz-selection {
-  background: transparent;
-}
-
 a,
 button {
   color: inherit;
   text-decoration: none;
   transition: var(--transition-smooth);
   outline: none;
+  cursor: pointer;
 }
 
-a:focus,
-button:focus {
-  outline: none;
-}
-
-/* Typography Utility */
 .heading-hero {
   font-size: clamp(3rem, 7vw, 6.5rem);
   font-weight: 500;
@@ -92,7 +78,6 @@ button:focus {
   line-height: 1.6;
 }
 
-/* UI Elements */
 .pill {
   display: inline-flex;
   align-items: center;
@@ -117,15 +102,14 @@ button:focus {
   color: var(--bg-color);
   border-radius: 9999px;
   font-weight: 500;
-  text-decoration: none;
   transition: var(--transition-smooth);
   border: 1px solid transparent;
-}
 
-.button-primary:hover {
-  background: transparent;
-  color: var(--text-primary);
-  border-color: var(--text-primary);
+  &:hover {
+    background: transparent;
+    color: var(--text-primary);
+    border-color: var(--text-primary);
+  }
 }
 
 .button-secondary {
@@ -139,11 +123,11 @@ button:focus {
   border-radius: 9999px;
   font-weight: 500;
   transition: var(--transition-smooth);
-}
 
-.button-secondary:hover {
-  border-color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.03);
+  &:hover {
+    border-color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.03);
+  }
 }
 
 /* Custom Scrollbar */
@@ -158,13 +142,11 @@ button:focus {
 ::-webkit-scrollbar-thumb {
   background: #333;
   border-radius: 4px;
+  &:hover {
+    background: #555;
+  }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-/* Container & Sections */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -180,12 +162,10 @@ button:focus {
   justify-content: center;
 }
 
-/* Bento Box Grids */
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
-  /* Auto rows to allow variable heights */
   grid-auto-rows: minmax(150px, auto);
 }
 
@@ -199,27 +179,17 @@ button:focus {
   transition: var(--transition-smooth);
   position: relative;
   overflow: hidden;
+
+  &:hover {
+    border-color: var(--border-hover);
+    background: rgba(25, 25, 25, 0.4);
+  }
+
+  &.span-2 { grid-column: span 2; }
+  &.span-3 { grid-column: span 3; }
+  &.span-4 { grid-column: span 4; }
 }
 
-.bento-item:hover {
-  border-color: var(--border-hover);
-  background: rgba(25, 25, 25, 0.4);
-}
-
-/* Layout spans for dynamic sizing */
-.span-2 {
-  grid-column: span 2;
-}
-
-.span-3 {
-  grid-column: span 3;
-}
-
-.span-4 {
-  grid-column: span 4;
-}
-
-/* Navigation & Footer */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -244,30 +214,29 @@ button:focus {
     grid-template-columns: 1fr;
   }
 
-  .span-2,
-  .span-3,
-  .span-4 {
+  .bento-item.span-2,
+  .bento-item.span-3,
+  .bento-item.span-4 {
     grid-column: span 1;
   }
 
-  .container {
-    padding: 0 16px;
-  }
-
-  .navbar {
-    padding: 1.5rem 16px;
-  }
-
-  .footer {
-    padding: 3rem 16px;
-  }
-
+  .container { padding: 0 16px; }
+  .navbar { padding: 1.5rem 16px; }
+  .footer { padding: 3rem 16px; }
   .section {
     padding-top: 5rem;
     padding-bottom: 5rem;
   }
+  .bento-item { padding: 1.5rem; }
+}
 
-  .bento-item {
-    padding: 1.5rem;
-  }
+/* Three.js Canvas Container */
+.canvas-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
 }

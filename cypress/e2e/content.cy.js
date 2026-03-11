@@ -23,9 +23,17 @@ describe('Portfolio — Content Integrity', () => {
       cy.contains(/high-performance web applications/i).should('be.visible');
     });
 
-    it('"Get in touch" button has mailto link', () => {
-      cy.get('a[href^="mailto:"]')
-        .should('contain', 'Get in touch');
+    it('"Download Resume" button has correct link', () => {
+      cy.contains(/download resume/i).should('have.attr', 'href', '/resume.pdf');
+    });
+  });
+
+  // ---- About Me (New) ----
+  context('About Me Section', () => {
+    it('displays the section heading and content', () => {
+      cy.get('#about').scrollIntoView();
+      cy.contains(/about me\./i).should('be.visible');
+      cy.contains(/my journey into software engineering/i).should('be.visible');
     });
   });
 
@@ -35,17 +43,17 @@ describe('Portfolio — Content Integrity', () => {
       cy.contains(/engineering arsenal/i).should('exist');
     });
 
-    it('lists frontend frameworks', () => {
+    it('lists frontend frameworks including new ones', () => {
       cy.contains('React 18').should('exist');
-      cy.contains('Next.js 13-16').should('exist');
-      cy.contains('TypeScript').should('exist');
-      cy.contains('Flutter').should('exist');
+      cy.contains('Next.js').should('exist');
+      cy.contains('GSAP').should('exist');
+      cy.contains('Three.js').should('exist');
     });
 
-    it('lists backend frameworks including Nest.js', () => {
-      cy.contains('Nest.js').should('exist');
+    it('lists backend frameworks', () => {
       cy.contains('Node.js').should('exist');
-      cy.contains('Firebase Admin').should('exist');
+      cy.contains('Firebase').should('exist');
+      cy.contains('PostgreSQL').should('exist');
     });
 
     it('shows efficiency & scale stats', () => {
@@ -79,7 +87,7 @@ describe('Portfolio — Content Integrity', () => {
 
     it('shows Financial Calculators project', () => {
       cy.contains(/financial calculators/i).should('exist');
-      cy.contains(/144 PRs/i).should('exist');
+      cy.contains(/mathematical precision/i).should('exist');
     });
   });
 
