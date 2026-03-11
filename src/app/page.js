@@ -19,6 +19,7 @@ export default function Home() {
   const spotlightY = useTransform(mouseY, (val) => val - 400);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     
     // Set initial position to center
