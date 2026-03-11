@@ -34,10 +34,10 @@ jobs:
         run: npm run test -- --ci --passWithNoTests
 
   # ───────────────────────────────────────────────
-  # 2. Build
+  # 2. Build & E2E Tests
   # ───────────────────────────────────────────────
-  build:
-    name: Production Build
+  e2e-test:
+    name: Build & E2E Tests
     runs-on: ubuntu-latest
     needs: unit-test
 
@@ -56,40 +56,6 @@ jobs:
 
       - name: Build Next.js app
         run: npm run build
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: nextjs-build
-          path: .next/
-          retention-days: 1
-
-  # ───────────────────────────────────────────────
-  # 3. E2E Tests (Cypress)
-  # ───────────────────────────────────────────────
-  e2e-test:
-    name: E2E Tests (Cypress)
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: nextjs-build
-          path: .next/
 
       - name: Start Next.js server & run Cypress
         uses: cypress-io/github-action@v6
