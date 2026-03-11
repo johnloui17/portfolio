@@ -2,21 +2,29 @@
 
 import { motion, useScroll, useTransform, useMotionValue } from "framer-motion";
 import { FiArrowRight, FiGithub, FiLinkedin, FiMail } from "react-icons/fi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
   const { scrollYProgress } = useScroll();
   const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   
-  // --- Spotlight: useMotionValue + useTransform at top level (NOT inside JSX) ---
-  const mouseX = useMotionValue(typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
-  const mouseY = useMotionValue(typeof window !== 'undefined' ? window.innerHeight / 2 : 0);
+  // --- Spotlight: useMotionValue + useTransform ---
+  // Initialize to 0 to match SSR
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
   // Offset so the orb is centered on the cursor
   const spotlightX = useTransform(mouseX, (val) => val - 400);
   const spotlightY = useTransform(mouseY, (val) => val - 400);
 
   useEffect(() => {
+    setMounted(true);
+    
+    // Set initial position to center
+    mouseX.set(window.innerWidth / 2);
+    mouseY.set(window.innerHeight / 2);
+
     const handleMouseMove = (e) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
@@ -42,13 +50,13 @@ export default function Home() {
       <motion.div 
         style={{
           position: "fixed",
-          top: 0,
-          left: 0,
+          top: "0px",
+          left: "0px",
           width: "100vw",
           height: "100vh",
           zIndex: -2,
           y: yBg,
-          background: "radial-gradient(circle at 50% 0%, rgba(30,30,30,0.4) 0%, rgba(0,0,0,1) 40%)",
+          backgroundImage: "radial-gradient(circle at 50% 0%, rgba(30,30,30,0.4) 0%, rgba(0,0,0,1) 40%)",
         }}
       />
       
@@ -58,12 +66,12 @@ export default function Home() {
           x: spotlightX,
           y: spotlightY,
           position: "fixed",
-          top: 0,
-          left: 0,
+          top: "0px",
+          left: "0px",
           width: "800px",
           height: "800px",
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(120, 60, 255, 0.25) 0%, rgba(60, 120, 255, 0.15) 40%, rgba(0, 0, 0, 0) 70%)",
+          backgroundImage: "radial-gradient(circle, rgba(120, 60, 255, 0.25) 0%, rgba(60, 120, 255, 0.15) 40%, rgba(0, 0, 0, 0) 70%)",
           filter: "blur(60px)",
           zIndex: 0,
           pointerEvents: "none",
@@ -312,7 +320,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="footer">
-        <p>© {new Date().getFullYear()} John Loui. Built with Precision.</p>
+        <p>© {mounted ? new Date().getFullYear() : "2026"} John Loui. Built with Precision.</p>
       </footer>
     </main>
   );
