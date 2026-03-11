@@ -14,6 +14,7 @@ jest.mock('framer-motion', () => ({
     p:   ({ children, style, className }) => <p   style={style} className={className}>{children}</p>,
     ul:  ({ children, style, className }) => <ul  style={style} className={className}>{children}</ul>,
     nav: ({ children, style, className }) => <nav style={style} className={className}>{children}</nav>,
+    section: ({ children, style, className, id }) => <section id={id} style={style} className={className}>{children}</section>,
   },
   useScroll:     () => ({ scrollYProgress: { get: () => 0, set: () => {} } }),
   useTransform:  () => 0,
