@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Required to push tags and commits
+      pull-requests: write # Required to create a PR
 
     steps:
       - name: Checkout repository
@@ -47,12 +48,15 @@ jobs:
           npm version $VERSION --no-git-tag-version --allow-same-version
           echo "package.json bumped to $VERSION"
 
-      - name: Commit updated package.json
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Create Pull Request for package.json bump
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit_message: "chore(release): bump version to ${{ steps.tag.outputs.new_version }} [skip ci]"
-          file_pattern: package.json package-lock.json
-          tagging_message: ''  # Tag was already created by the previous step
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(release): bump version to ${{ steps.tag.outputs.new_version }} [skip ci]"
+          title: "chore(release): bump version to ${{ steps.tag.outputs.new_version }}"
+          body: "Automated version bump in package.json to ${{ steps.tag.outputs.new_version }}."
+          branch: "release/v${{ steps.tag.outputs.new_version }}"
+          base: master
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
