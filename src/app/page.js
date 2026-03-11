@@ -105,7 +105,9 @@ export default function Home() {
 
     return () => {
       ctx.revert();
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      if (typeof ScrollTrigger.getAll === 'function') {
+        ScrollTrigger.getAll().forEach(t => t.kill());
+      }
     };
   }, []);
 
